@@ -2,7 +2,7 @@
 
 export type UserName = {
     firstName : string;
-    secondName : string;
+    secondName?: string;
     lastName : string;
 }
 
@@ -26,7 +26,7 @@ export type Student = {
     id : string;
     name : UserName;
     gender : 'male' | 'female';
-    dateOfBirth : Date;
+    dateOfBirth? : Date;
     email : string;
     contactNo : string;
     emergencyContact : string;
