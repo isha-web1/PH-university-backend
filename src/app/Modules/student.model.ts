@@ -1,6 +1,8 @@
 import { Schema, model, } from 'mongoose';
 import validator from 'validator';
 import { Guardian, LocalGuardian,  Student, UserName } from './students/students.interface';
+import bcrypt from 'bcrypt'
+import config from '../config';
 
 
 const userNameSchema = new Schema<UserName>({
@@ -32,6 +34,7 @@ const LocalGuardianSchema = new Schema<LocalGuardian>({
 
 const StudentSchema = new Schema<Student>({
     id: { type: String, required : true, unique : true },
+    password: { type: String, required : true, unique : true },
     name: {
         type : userNameSchema,
         required : true
@@ -75,6 +78,23 @@ const StudentSchema = new Schema<Student>({
         default : 'active'
     }
 
+})
+
+// pre save middleware/hook : will work on create() save()
+StudentSchema.pre('save',async function(next){
+    // console.log(this, 'pre hook : we will save the data')
+    // hashing password and save into DB
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const user = this;
+  user.password = await  bcrypt.hash(user.password, Number(config.bcrypt_salt_rounds))
+
+  next()
+
+})
+
+// post save middleware/hook
+StudentSchema.post('save', function(){
+    console.log(this, 'post hook: we save our data')
 })
 
 export const StudentModel = model<Student>('Student', StudentSchema);
