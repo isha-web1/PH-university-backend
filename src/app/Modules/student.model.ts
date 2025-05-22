@@ -65,11 +65,11 @@ const LocalGuardianSchema = new Schema<TLocalGuardian>({
 });
 
 const StudentSchema = new Schema<TStudent, StudentModel>({
-  id: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  id: { type: String, required: [true, 'id is required'], unique: true },
+  password: { type: String, required: [true, 'password is required'], maxlength : [20, 'password can not be more than 20'] },
   name: {
     type: userNameSchema,
-    required: true,
+    required: [true, "name is required"],
   },
   gender: {
     type: String,
@@ -127,7 +127,17 @@ const StudentSchema = new Schema<TStudent, StudentModel>({
       type : Boolean,
       default : false
   }
+},{
+  toJSON: {
+    virtuals: true,
+  }
 });
+
+// virtual field
+
+StudentSchema.virtual('fullName').get(function(){
+  return `${this.name.firstName} ${this.name.secondName} ${this.name.lastName}`
+})
 
 
 

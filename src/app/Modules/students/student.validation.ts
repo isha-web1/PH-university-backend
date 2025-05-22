@@ -24,7 +24,7 @@ const LocalGuardianValidationSchema = z.object({
 
 const StudentValidationSchema = z.object({
     id: z.string().min(1, 'ID is required'),
-    password: z.string().min(10, 'ID is required'),
+    password: z.string().min(1, 'password is required'),
     name: userNameValidationSchema,
     gender: z.enum(['male', 'female'], { message: 'Gender is required' }),
     dateOfBirth: z.coerce.date().optional(),
