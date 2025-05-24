@@ -22,10 +22,11 @@ const LocalGuardianValidationSchema = z.object({
     address: z.string().min(1, 'Address must be included')
 });
 
-const StudentValidationSchema = z.object({
-    id: z.string().min(1, 'ID is required'),
+const createStudentValidationSchema = z.object({
+    body : z.object({
     password: z.string().min(1, 'password is required'),
-    name: userNameValidationSchema,
+    student : z.object({
+        name: userNameValidationSchema,
     gender: z.enum(['male', 'female'], { message: 'Gender is required' }),
     dateOfBirth: z.coerce.date().optional(),
     email: z.string().min(1, 'Email must be included').email('Invalid email format'),
@@ -37,8 +38,11 @@ const StudentValidationSchema = z.object({
     guardian: GuardianValidationSchema,
     localGuardian: LocalGuardianValidationSchema,
     profileImage: z.string().optional(),
-    isActive: z.enum(['active', 'blocked']).default('active'),
-    isDeleted: z.boolean().default(false),
-});
+    })
+    
+})
+})
 
-export default StudentValidationSchema;
+export const StudentValidations = {
+     createStudentValidationSchema
+};
