@@ -38,7 +38,8 @@ const createStudentValidationSchema = z.object({
     guardian: GuardianValidationSchema,
     localGuardian: LocalGuardianValidationSchema,
     profileImage: z.string().optional(),
-    admissionSemester : z.string().min(1, 'Admission Semester is required')
+    admissionSemester : z.string().min(1, 'Admission Semester is required'),
+     academicDepartment: z.string(),
     })
     
 })
