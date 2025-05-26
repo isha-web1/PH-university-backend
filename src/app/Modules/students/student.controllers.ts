@@ -24,8 +24,8 @@ const getAllStudent: RequestHandler = catchAsync(async (req, res) => {
 
 
 const getSingleStudent = catchAsync(async (req, res) => {
-  const { id } = req.params;
-  const result = await studentServices.getSingleStudentFromDb(id);
+  const {  studentId } = req.params;
+  const result = await studentServices.getSingleStudentFromDb(studentId);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -35,6 +35,20 @@ const getSingleStudent = catchAsync(async (req, res) => {
   });
 });
 
+
+
+const updateStudent = catchAsync(async (req, res) => {
+  const { id } = req.params;
+ const { student } = req.body;
+  const result = await studentServices.updateStudentIntoDB(id,student);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Student is updated successfully',
+    data: result,
+  });
+});
 
 
 
@@ -55,5 +69,6 @@ export const studentControllers = {
    
     getAllStudent,
     getSingleStudent,
-    deleteStudent
+    deleteStudent,
+    updateStudent,
 }
