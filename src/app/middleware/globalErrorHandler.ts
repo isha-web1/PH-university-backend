@@ -5,6 +5,8 @@ import config from "../config";
 import { TErrorSources } from "../interface/error";
 import handleZodError from "../errors/handleZodError";
 import { ZodError } from "zod";
+import handleValidationError from "../errors/handleValidationError";
+import handleCastError from "../errors/handleCastError";
 
 const GlobalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
   //setting default values
@@ -22,7 +24,17 @@ const GlobalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
     statusCode = simplifiedError?.statusCode;
     message = simplifiedError?.message;
     errorSources = simplifiedError?.errorSources;
-  } 
+  } else if (err?.name === 'ValidationError') {
+    const simplifiedError = handleValidationError(err);
+    statusCode = simplifiedError?.statusCode;
+    message = simplifiedError?.message;
+    errorSources = simplifiedError?.errorSources;
+  } else if (err?.name === 'CastError') {
+    const simplifiedError = handleCastError(err);
+    statusCode = simplifiedError?.statusCode;
+    message = simplifiedError?.message;
+    errorSources = simplifiedError?.errorSources;
+  }
    
   
   //ultimate return
