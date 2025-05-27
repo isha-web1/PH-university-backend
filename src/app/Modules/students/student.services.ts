@@ -7,8 +7,25 @@ import { TStudent } from "./students.interface";
 
 
 
-const getAllStudentFromDb = async () => {
-  const result = await Student.find()
+const getAllStudentFromDb = async (query : Record<string,unknown>) => {
+  const queryObject = { ...query };
+  const studentSearchableFields = ['email', 'name.firstName', 'name.lastName', 'presentAddress'];
+  let searchTerm = '';
+  if(query?.searchTerm){
+    searchTerm = query?.searchTerm as string
+  }
+
+  const excludedFields = ['searchTerm', 'sort', 'page','limit'];
+  excludedFields.forEach((field) => delete queryObject[field]);
+
+  const searchQuery = Student.find({
+    $or : studentSearchableFields.map((field) => ({
+      [field] : {
+        $regex: searchTerm, $options: 'i',}
+    }))
+  })
+
+  const filterQuery =  searchQuery.find(queryObject)
   .populate('admissionSemester')
   .populate({
     path : 'academicDepartment',
@@ -16,7 +33,26 @@ const getAllStudentFromDb = async () => {
       path : 'academicFaculty'
     }
   });
-  return result;
+
+
+  let sort = '-createdAt';
+
+  if (query?.sort) {
+    sort = query.sort as string;
+  }
+
+  const sortQuery =  filterQuery.sort(sort);
+
+
+  let limit = 1;
+
+  if (query?.limit) {
+    limit =Number(query.limit) ;
+  }
+
+  const limitQuery = await sortQuery.limit(limit);
+
+  return limitQuery;
 };
 
 const getSingleStudentFromDb = async (studentId: string) => {

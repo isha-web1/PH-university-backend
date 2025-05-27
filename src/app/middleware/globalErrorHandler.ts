@@ -7,8 +7,11 @@ import handleZodError from "../errors/handleZodError";
 import { ZodError } from "zod";
 import handleValidationError from "../errors/handleValidationError";
 import handleCastError from "../errors/handleCastError";
+import handleDuplicateError from "../errors/handleDuplicateError";
+import AppError from "../errors/appError";
 
-const GlobalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
+
+const GlobalErrorHandler: ErrorRequestHandler = (err, req, res, next) : void => {
   //setting default values
   let statusCode = 500;
   let message = 'Something went wrong!';
@@ -34,11 +37,32 @@ const GlobalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
     statusCode = simplifiedError?.statusCode;
     message = simplifiedError?.message;
     errorSources = simplifiedError?.errorSources;
+  } else if (err?.code === 11000) {
+    const simplifiedError = handleDuplicateError(err);
+    statusCode = simplifiedError?.statusCode;
+    message = simplifiedError?.message;
+    errorSources = simplifiedError?.errorSources;
+  } else if (err instanceof AppError) {
+    statusCode = err?.statusCode;
+    message = err.message;
+    errorSources = [
+      {
+        path: '',
+        message: err?.message,
+      },
+    ];
+  } else if (err instanceof Error) {
+    message = err.message;
+    errorSources = [
+      {
+        path: '',
+        message: err?.message,
+      },
+    ];
   }
-   
-  
+
   //ultimate return
-  return res.status(statusCode).json({
+   res.status(statusCode).json({
     success: false,
     message,
     errorSources,
