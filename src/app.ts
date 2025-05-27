@@ -2,9 +2,10 @@ import express, { Application, Request, Response } from 'express'
 import cors from 'cors'
 
 import { UserRoutes } from './app/Modules/user/user.route'
-import { GlobalErrorHandler } from './app/middleware/globalErrorHandler'
+
 import notFound from './app/middleware/notFound'
 import router from './app/routes'
+import GlobalErrorHandler from './app/middleware/globalErrorHandler'
 const app : Application = express()
 
 

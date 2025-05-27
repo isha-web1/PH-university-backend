@@ -1,11 +1,49 @@
-import { NextFunction, Request, Response } from "express"
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { ErrorRequestHandler, } from "express"
+import config from "../config";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const GlobalErrorHandler = (err : any, req : Request, res : Response, next : NextFunction)=>{
-  res.status(500).json({
-    success : false,
-    message : err.message || 'Internal server error',
-    stack : err.stack
-  })
-  next()
-}
+import { TErrorSources } from "../interface/error";
+import handleZodError from "../errors/handleZodError";
+import { ZodError } from "zod";
+
+const GlobalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
+  //setting default values
+  let statusCode = 500;
+  let message = 'Something went wrong!';
+  let errorSources: TErrorSources = [
+    {
+      path: '',
+      message: 'Something went wrong',
+    },
+  ];
+
+  if (err instanceof ZodError) {
+    const simplifiedError = handleZodError(err);
+    statusCode = simplifiedError?.statusCode;
+    message = simplifiedError?.message;
+    errorSources = simplifiedError?.errorSources;
+  } 
+   
+  
+  //ultimate return
+  return res.status(statusCode).json({
+    success: false,
+    message,
+    errorSources,
+    err,
+    stack: config.NODE_ENV === 'development' ? err?.stack : null,
+  });
+};
+
+export default GlobalErrorHandler;
+
+//pattern
+/*
+success
+message
+errorSources:[
+  path:'',
+  message:''
+]
+stack
+*/
