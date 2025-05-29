@@ -131,6 +131,7 @@ const deleteStudentFromDb = async ( studentId : string) => {
     await session.endSession();
 
     return deletedStudent;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err : any ) {
     await session.abortTransaction();
     await session.endSession();
