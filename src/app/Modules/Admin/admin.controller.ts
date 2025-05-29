@@ -3,6 +3,7 @@ import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import { AdminServices } from './admin.service';
 
+
 const getSingleAdmin = catchAsync(async (req, res) => {
   const { id } = req.params;
   const result = await AdminServices.getSingleAdminFromDB(id);
@@ -29,6 +30,7 @@ const getAllAdmins = catchAsync(async (req, res) => {
 const updateAdmin = catchAsync(async (req, res) => {
   const { id } = req.params;
   const { admin } = req.body;
+  
   const result = await AdminServices.updateAdminIntoDB(id, admin);
 
   sendResponse(res, {
@@ -40,8 +42,8 @@ const updateAdmin = catchAsync(async (req, res) => {
 });
 
 const deleteAdmin = catchAsync(async (req, res) => {
-  const { id } = req.params;
-  const result = await AdminServices.deleteAdminFromDB(id);
+  const { adminId } = req.params;
+  const result = await AdminServices.deleteAdminFromDB(adminId);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

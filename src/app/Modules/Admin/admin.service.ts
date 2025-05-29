@@ -38,7 +38,8 @@ const updateAdminIntoDB = async (id: string, payload: Partial<TAdmin>) => {
     }
   }
 
-  const result = await Admin.findByIdAndUpdate({ id }, modifiedUpdatedData, {
+  // FIX: pass id directly, not as { id }
+  const result = await Admin.findByIdAndUpdate(id, modifiedUpdatedData, {
     new: true,
     runValidators: true,
   });
@@ -51,24 +52,30 @@ const deleteAdminFromDB = async (id: string) => {
   try {
     session.startTransaction();
 
+    
+
     const deletedAdmin = await Admin.findByIdAndUpdate(
       id,
       { isDeleted: true },
       { new: true, session },
     );
 
+   
+
     if (!deletedAdmin) {
       throw new AppError(httpStatus.BAD_REQUEST, 'Failed to delete student');
     }
 
-    // get user _id from deletedAdmin
     const userId = deletedAdmin.user;
+    
 
     const deletedUser = await User.findOneAndUpdate(
-      userId,
+      { _id: userId },
       { isDeleted: true },
       { new: true, session },
     );
+
+    
 
     if (!deletedUser) {
       throw new AppError(httpStatus.BAD_REQUEST, 'Failed to delete user');
@@ -79,9 +86,10 @@ const deleteAdminFromDB = async (id: string) => {
 
     return deletedAdmin;
   } catch (err: any) {
+  
     await session.abortTransaction();
     await session.endSession();
-    throw new Error(err);
+    throw err;
   }
 };
 
