@@ -39,7 +39,7 @@ const getAllStudentFromDb = async (query : Record<string,unknown>) => {
 
 const getSingleStudentFromDb = async (studentId: string) => {
 //   const result = await Student.findOne({ id });
-const result = await Student.findOne({id : studentId}).populate('admissionSemester')
+const result = await Student.findById(studentId).populate('admissionSemester')
   .populate({
     path : 'academicDepartment',
     populate : {
@@ -87,35 +87,31 @@ const updateStudentIntoDB = async (id: string, payload: Partial<TStudent>) => {
     }
   }
 
-  const result = await Student.findOneAndUpdate({id : id}, modifiedUpdatedData, {
+  const result = await Student.findByIdAndUpdate(id, modifiedUpdatedData, {
     new: true,
     runValidators: true,
   });
   return result;
 };
 
-const deleteStudentFromDb = async ( studentId : string) => {
-   const session = await mongoose.startSession();
+const deleteStudentFromDB = async (studentId: string) => {
+  const session = await mongoose.startSession();
 
   try {
     session.startTransaction();
 
-     // Find student by custom id field
-    const student = await Student.findOne({ id: studentId }).session(session);
-
-    if (!student) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Student not found');
-    }
-
-    // Soft delete
-    const deletedStudent = await Student.findOneAndUpdate(
-      { id: studentId },
+    const deletedStudent = await Student.findByIdAndUpdate(
+      studentId,
       { isDeleted: true },
-      { new: true, session }
+      { new: true, session },
     );
 
+    if (!deletedStudent) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to delete student');
+    }
+
     // get user _id from deletedStudent
-    const userId = student.user;
+    const userId = deletedStudent.user;
 
     const deletedUser = await User.findByIdAndUpdate(
       userId,
@@ -132,12 +128,12 @@ const deleteStudentFromDb = async ( studentId : string) => {
 
     return deletedStudent;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (err : any ) {
+  } catch (err : any) {
+     
     await session.abortTransaction();
     await session.endSession();
-    console.error("Error deleting student:", err);
-    throw new AppError(httpStatus.BAD_REQUEST,'Failed to delete student');
-    
+    throw new Error('Failed to delete student');
+     throw new Error(err);
   }
 };
 
@@ -145,6 +141,6 @@ export const studentServices = {
   
   getAllStudentFromDb,
   getSingleStudentFromDb,
-  deleteStudentFromDb,
+  deleteStudentFromDB,
   updateStudentIntoDB
 };
