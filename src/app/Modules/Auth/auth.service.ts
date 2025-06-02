@@ -1,43 +1,37 @@
+import httpStatus from 'http-status';
 import AppError from "../../errors/appError";
 import { User } from "../user/user.model";
 import { TLoginUser } from "./auth.interface";
-import httpStatus from 'http-status';
+
 
 
 const loginUser = async (payload: TLoginUser) => {
   // checking if the user is exist
-  const user = await User.isUserExistsByCustomId(payload.id);
+  const ifUserExist = await User.findOne({id: payload.id})
 
-  if (!user) {
-    throw new AppError(httpStatus.NOT_FOUND, 'This user is not found !');
+  if (!ifUserExist) {
+    throw new AppError(httpStatus.NOT_FOUND,"User does not exist");
   }
-  // checking if the user is already deleted
 
-  const isDeleted = user?.isDeleted;
+   // checking if the user is already deleted
+
+  const isDeleted = ifUserExist?.isDeleted;
 
   if (isDeleted) {
     throw new AppError(httpStatus.FORBIDDEN, 'This user is deleted !');
   }
 
-  // checking if the user is blocked
 
-  const userStatus = user?.status;
+   // checking if the user is blocked
+
+  const userStatus = ifUserExist?.status;
 
   if (userStatus === 'blocked') {
     throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked ! !');
   }
 
-  //checking if the password is correct
-
-  if (!(await User.isPasswordMatched(payload?.password, user?.password)))
-    throw new AppError(httpStatus.FORBIDDEN, 'Password do not matched');
-
-
-
-  return {
-    
-    needsPasswordChange: user?.needsPasswordChange,
-  };
+  
+ 
 };
 
 
