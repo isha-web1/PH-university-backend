@@ -116,6 +116,7 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
     userData.id = await generateFacultyId();
 
     // create a user (transaction-1)
+    userData.email = payload.email;
     const newUser = await User.create([userData], { session }); // array
 
     //create a faculty
