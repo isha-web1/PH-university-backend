@@ -7,9 +7,6 @@ import httpStatus from 'http-status';
 
 const loginUser = catchAsync(async (req, res) => {
   const result = await AuthService.loginUser(req.body);
-  
-
- 
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -20,6 +17,21 @@ const loginUser = catchAsync(async (req, res) => {
 });
 
 
+
+const changePassword = catchAsync(async (req, res) => {
+  const { ...passwordData } = req.body;
+
+  const result = await AuthService.changePassword(req.user, passwordData);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Password is updated successfully!',
+    data: result,
+  });
+});
+
+
 export const AuthController = {
     loginUser,
+    changePassword,
 }
