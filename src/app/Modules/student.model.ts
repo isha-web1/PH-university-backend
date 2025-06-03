@@ -77,6 +77,7 @@ const StudentSchema = new Schema<TStudent, StudentModel>({
     type: userNameSchema,
     required: [true, "name is required"],
   },
+  
   gender: {
     type: String,
     enum: {

@@ -50,6 +50,7 @@ const createStudentIntoDb = async (password : string, payLoad: TStudent) => {
     userData.id = await generateStudentId(admissionSemester);
 
     // create a user (transaction-1)
+     userData.email = payLoad.email;
     const newUser = await User.create([userData], { session }); // array
 
     //create a student
@@ -166,7 +167,7 @@ const createAdminIntoDB = async (password: string, payload: TFaculty) => {
     session.startTransaction();
     //set  generated id
     userData.id = await generateAdminId();
-
+     userData.email = payload.email;
     // create a user (transaction-1)
     const newUser = await User.create([userData], { session }); 
 
@@ -179,6 +180,7 @@ const createAdminIntoDB = async (password: string, payload: TFaculty) => {
     payload.user = newUser[0]._id; //reference _id
 
     // create a admin (transaction-2)
+   
     const newAdmin = await Admin.create([payload], { session });
 
     if (!newAdmin.length) {
