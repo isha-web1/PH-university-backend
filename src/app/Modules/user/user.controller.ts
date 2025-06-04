@@ -11,7 +11,7 @@ const createStudent = catchAsync(async (req, res) => {
   const result = await UserServices.createStudentIntoDb(
     password,
     studentData,
-    
+     req.file,
   );
 
   sendResponse(res, {

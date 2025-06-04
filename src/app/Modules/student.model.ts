@@ -100,7 +100,7 @@ const StudentSchema = new Schema<TStudent, StudentModel>({
     type: String,
     required: [true, "contact number must be included"],
   },
-  emergencyContact: {
+  emergencyContactNo: {
     type: String,
     required: [true, "emergency contact number must be included"],
   },

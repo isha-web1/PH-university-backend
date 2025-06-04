@@ -14,10 +14,12 @@ import { AcademicDepartment } from "../academicDepartment/academicDepartment.mod
 import { Faculty } from "../Faculty/faculty.model";
 import { generateFacultyId } from "./user.utils";
 import { Admin } from "../Admin/admin.model";
+import { sendImageToCloudinary } from "../../utils/sendImageToCloudinary";
 
 
 
-const createStudentIntoDb = async (password : string, payLoad: TStudent) => {
+
+const createStudentIntoDb = async (password : string, payLoad: TStudent,file: any,) => {
 
     // create a user object
 
@@ -60,6 +62,16 @@ const createStudentIntoDb = async (password : string, payLoad: TStudent) => {
     // set id , _id as user
     payLoad.id = newUser[0].id;
     payLoad.user = newUser[0]._id; //reference _id
+      if (file) {
+      const imageName = `${userData.id}${payLoad?.name?.firstName}`;
+      const path = file?.path;
+      //send image to cloudinary
+      const { secure_url } = await sendImageToCloudinary(imageName, path);
+      payLoad.profileImage = secure_url as string;
+    }
+
+
+    
     
 
     // create a student (transaction-2)
@@ -89,7 +101,7 @@ const createStudentIntoDb = async (password : string, payLoad: TStudent) => {
 // create Faculty services
 
 
-const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
+const createFacultyIntoDB = async (password: string, payload: TFaculty, ) => {
   // create a user object
   const userData: Partial<TUser> = {};
 
@@ -115,6 +127,12 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
     //set  generated id
     userData.id = await generateFacultyId();
 
+
+    //   const imageName = `${userData.id}${payload?.name?.firstName}`;
+    // const path = file?.path;
+    //send image to cloudinary
+    // const { secure_url } = await sendImageToCloudinary(imageName, path);
+
     // create a user (transaction-1)
     userData.email = payload.email;
     const newUser = await User.create([userData], { session }); // array
@@ -126,6 +144,7 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
     // set id , _id as user
     payload.id = newUser[0].id;
     payload.user = newUser[0]._id; //reference _id
+    // payload.profileImg  = secure_url;
 
     // create a faculty (transaction-2)
 
