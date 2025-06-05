@@ -32,9 +32,12 @@ router.post(
       try {
         req.body = JSON.parse(req.body.data);
         return next();
-      } catch (err) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (err : any ) {
+        console.error("Error parsing JSON:", err.message);
         res.status(400).json({ success: false, message: 'Invalid JSON in data field.' });
         return;
+
       }
     }
 

@@ -1,8 +1,8 @@
 import express from 'express';
-import auth from '../../middlewares/auth';
-import validateRequest from '../../middlewares/validateRequest';
+import auth from '../../middleware/auth';
+import validateRequest from '../../middleware/validateRequest';
 import { EnrolledCourseControllers } from './enrolledCourse.controller';
-import { EnrolledCourseValidations } from './enrolledCourse.validaton';
+import { EnrolledCourseValidations } from './enrolledCourse.validation';
 
 const router = express.Router();
 
@@ -15,6 +15,7 @@ router.post(
   EnrolledCourseControllers.createEnrolledCourse,
 );
 
+
 router.patch(
   '/update-enrolled-course-marks',
   auth('faculty'),
@@ -24,10 +25,6 @@ router.patch(
   EnrolledCourseControllers.updateEnrolledCourseMarks,
 );
 
-router.get(
-  // '/student-analytics/:courseId',
-  '/student-analytics',
-  EnrolledCourseControllers.enrolledCourseStudentAnalytics,
-);
+
 
 export const EnrolledCourseRoutes = router;
