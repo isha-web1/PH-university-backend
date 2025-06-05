@@ -44,6 +44,8 @@ const createStudentIntoDb = async (password : string, payLoad: TStudent,file: an
     throw new AppError(400, 'Admission semester not found');
   }
 
+  payLoad.academicFaculty = AcademicDepartment.academicFaculty;
+
   const session = await mongoose.startSession();
 
   try {
