@@ -3,6 +3,8 @@ import sendResponse from "../../utils/sendResponse";
 import { OfferedCourseService } from "./offeredCourse.service";
 import httpStatus from 'http-status';
 import {  Request,  Response } from 'express';
+import { TResponse } from "../../utils/types";
+
 
 
 
@@ -84,11 +86,30 @@ const deleteOfferedCourseFromDB = catchAsync(
   },
 );
 
+
+
+const getMyOfferedCourses = catchAsync(async (req: Request, res: Response) => {
+  const userId = req.user.userId;
+  const result = await OfferedCourseService.getMyOfferedCoursesFromDB(
+    userId,
+    req.query,
+  );
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'OfferedCourses retrieved successfully !',
+    meta: result.meta,
+    data: result.result,
+  }as TResponse<typeof result.result>);
+});
+
 export const OfferedCourseController = {
     createOfferedCourse,
     updateOfferedCourse,
     getAllOfferedCourses,
     getSingleOfferedCourses,
     deleteOfferedCourseFromDB,
+    getMyOfferedCourses,
     
 }
