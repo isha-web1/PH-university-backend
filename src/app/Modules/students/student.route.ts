@@ -13,17 +13,17 @@ const router = express.Router();
 // will call the controller function to create a student
 
 
-router.get('/', studentControllers.getAllStudent)
+router.get('/', auth(USER_ROLE.superAdmin, USER_ROLE.admin), studentControllers.getAllStudent)
 
 router.get('/:studentId',auth(USER_ROLE.student, USER_ROLE.admin, USER_ROLE.faculty), studentControllers.getSingleStudent)
 
-router.patch('/:id',validateRequest(updateStudentValidationSchema), studentControllers.updateStudent,);
+router.patch('/:id',auth(USER_ROLE.superAdmin, USER_ROLE.admin),validateRequest(updateStudentValidationSchema), studentControllers.updateStudent,);
   
   
   
 
 
-router.delete('/:studentId', studentControllers.deleteStudent)
+router.delete('/:studentId', auth(USER_ROLE.superAdmin, USER_ROLE.admin), studentControllers.deleteStudent)
 
 
 export const studentRoutes = router;
