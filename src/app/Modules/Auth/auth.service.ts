@@ -1,19 +1,16 @@
 import bcrypt from 'bcrypt';
 import httpStatus from 'http-status';
-import AppError from "../../errors/appError";
-import { User } from "../user/user.model";
-import { TLoginUser } from "./auth.interface";
-import  jwt,{ JwtPayload } from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../../config';
-import { createToken, verifyToken } from './auth.utils';
+
 import { sendEmail } from '../../utils/sendEmail';
-
-
-
+import { User } from '../user/user.model';
+import { TLoginUser } from './auth.interface';
+import { createToken, verifyToken } from './auth.utils';
+import AppError from '../../errors/appError';
 
 const loginUser = async (payload: TLoginUser) => {
- 
-    // checking if the user is exist
+  // checking if the user is exist
   const user = await User.isUserExistsByCustomId(payload.id);
 
   if (!user) {
@@ -40,8 +37,7 @@ const loginUser = async (payload: TLoginUser) => {
   if (!(await User.isPasswordMatched(payload?.password, user?.password)))
     throw new AppError(httpStatus.FORBIDDEN, 'Password do not matched');
 
-
-   //create token and sent to the  client
+  //create token and sent to the  client
 
   const jwtPayload = {
     userId: user.id,
@@ -66,11 +62,6 @@ const loginUser = async (payload: TLoginUser) => {
     needsPasswordChange: user?.needsPasswordChange,
   };
 };
-  
- 
-
-
-
 
 const changePassword = async (
   userData: JwtPayload,
@@ -124,7 +115,6 @@ const changePassword = async (
   return null;
 };
 
-
 const refreshToken = async (token: string) => {
   // checking if the given token is valid
   const decoded = verifyToken(token, config.jwt_refresh_secret as string);
@@ -174,9 +164,6 @@ const refreshToken = async (token: string) => {
   };
 };
 
-
-
-
 const forgetPassword = async (userId: string) => {
   // checking if the user is exist
   const user = await User.isUserExistsByCustomId(userId);
@@ -209,16 +196,12 @@ const forgetPassword = async (userId: string) => {
     '10m',
   );
 
-  const resetUILink = `${config.reset_pass_ui_link}=${user.id}&token=${resetToken} `;
+  const resetUILink = `${config.reset_pass_ui_link}?id=${user.id}&token=${resetToken} `;
 
   sendEmail(user.email, resetUILink);
 
   console.log(resetUILink);
 };
-
-
-
-
 
 const resetPassword = async (
   payload: { id: string; newPassword: string },
@@ -249,7 +232,7 @@ const resetPassword = async (
     config.jwt_access_secret as string,
   ) as JwtPayload;
 
-  //localhost:3000?id=A-0001&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJBLTAwMDEiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MDI4NTA2MTcsImV4cCI6MTcwMjg1MTIxN30.-T90nRaz8-KouKki1DkCSMAbsHyb9yDi0djZU3D6QO4
+
 
   if (payload.id !== decoded.userId) {
     console.log(payload.id, decoded.userId);
@@ -275,8 +258,7 @@ const resetPassword = async (
   );
 };
 
-
-export const AuthService = {
+export const AuthServices = {
   loginUser,
   changePassword,
   refreshToken,

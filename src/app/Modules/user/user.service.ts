@@ -19,6 +19,7 @@ import { sendImageToCloudinary } from "../../utils/sendImageToCloudinary";
 
 
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const createStudentIntoDb = async (password : string, payLoad: TStudent,file: any,) => {
 
     // create a user object
@@ -111,6 +112,7 @@ const createStudentIntoDb = async (password : string, payLoad: TStudent,file: an
 // create Faculty services
 
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const createFacultyIntoDB = async (password: string, payload: TFaculty,file : any) => {
   // create a user object
   const userData: Partial<TUser> = {};
@@ -186,6 +188,7 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty,file : an
 // create admin services
 
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const createAdminIntoDB = async (password: string, payload: TFaculty, file : any) => {
   // create a user object
   const userData: Partial<TUser> = {};

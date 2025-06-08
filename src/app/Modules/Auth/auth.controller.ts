@@ -1,13 +1,13 @@
 import config from "../../config";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
-import { AuthService } from "./auth.service";
+import { AuthServices } from "./auth.service";
 import httpStatus from 'http-status';
 
 
 
 const loginUser = catchAsync(async (req, res) => {
-  const result = await AuthService.loginUser(req.body);
+  const result = await AuthServices.loginUser(req.body);
   const { refreshToken, accessToken, needsPasswordChange } = result;
 
   res.cookie('refreshToken', refreshToken, {
@@ -31,7 +31,7 @@ const loginUser = catchAsync(async (req, res) => {
 const changePassword = catchAsync(async (req, res) => {
   const { ...passwordData } = req.body;
 
-  const result = await AuthService.changePassword(req.user, passwordData);
+  const result = await AuthServices.changePassword(req.user, passwordData);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -44,7 +44,7 @@ const changePassword = catchAsync(async (req, res) => {
 
 const refreshToken = catchAsync(async (req, res) => {
   const { refreshToken } = req.cookies;
-  const result = await AuthService.refreshToken(refreshToken);
+  const result = await AuthServices.refreshToken(refreshToken);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -58,7 +58,7 @@ const refreshToken = catchAsync(async (req, res) => {
 
 const forgetPassword = catchAsync(async (req, res) => {
   const userId = req.body.id;
-  const result = await AuthService.forgetPassword(userId);
+  const result = await AuthServices.forgetPassword(userId);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -76,7 +76,7 @@ const resetPassword = catchAsync(async (req, res) => {
   if (!token) {
     throw new Error('Token not found');
   }
-  const result = await AuthService.resetPassword(req.body, token);
+  const result = await AuthServices.resetPassword(req.body, token);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
