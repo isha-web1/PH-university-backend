@@ -5,6 +5,12 @@ PH University Backend is a robust, modular, and scalable RESTful API server desi
 ## Requirement Analysis :  https://docs.google.com/document/d/10mkjS8boCQzW4xpsESyzwCCLJcM3hvLghyD_TeXPBx0/edit?tab=t.0
 
 
+
+### Entity-Relationship Diagrams
+
+![ER DIAGRAM](./erdiagram.png)
+
+
 ## Table of Contents
 
 - [Features](#features)
