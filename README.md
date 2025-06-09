@@ -2,6 +2,9 @@
 
 PH University Backend is a robust, modular, and scalable RESTful API server designed for managing university operations. It serves as the backend for a university management system, providing features such as user authentication, role-based access, course and faculty management, student enrollment, grading, and more. The project follows a clean architecture with separation of concerns for maintainability and extensibility.
 
+## Requirement Analysis :  https://docs.google.com/document/d/10mkjS8boCQzW4xpsESyzwCCLJcM3hvLghyD_TeXPBx0/edit?tab=t.0
+
+
 ## Table of Contents
 
 - [Features](#features)
@@ -162,15 +165,7 @@ The heart of the backend lies in the **Modules** folder, where each domain featu
 
 ---
 
-## License
 
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
-
----
-
-## Contact
-
-For any queries, open an issue or contact the maintainer at [your-email@example.com].
 
 ---
 
